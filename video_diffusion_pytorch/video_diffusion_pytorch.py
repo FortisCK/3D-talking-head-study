@@ -129,6 +129,7 @@ class Residual(nn.Module):
     def forward(self, x, *args, **kwargs):
         return self.fn(x, *args, **kwargs) + x
 
+# 正弦位置嵌入
 class SinusoidalPosEmb(nn.Module):
     def __init__(self, dim):
         super().__init__()
@@ -160,6 +161,7 @@ class LayerNorm(nn.Module):
         mean = torch.mean(x, dim = 1, keepdim = True)
         return (x - mean) / (var + self.eps).sqrt() * self.gamma
 
+# 组归一化
 class PreNorm(nn.Module):
     def __init__(self, dim, fn):
         super().__init__()
@@ -172,7 +174,7 @@ class PreNorm(nn.Module):
 
 # building block modules
 
-
+# ResNEt模块
 class Block(nn.Module):
     def __init__(self, dim, dim_out, groups = 8):
         super().__init__()
@@ -216,6 +218,7 @@ class ResnetBlock(nn.Module):
         h = self.block2(h)
         return h + self.res_conv(x)
 
+# 注意力模块
 class SpatialLinearAttention(nn.Module):
     def __init__(self, dim, heads = 4, dim_head = 32):
         super().__init__()
@@ -528,11 +531,13 @@ class Unet3D(nn.Module):
 
 # gaussian diffusion trainer class
 
+# 按照t提取一个批次的索引
 def extract(a, t, x_shape):
     b, *_ = t.shape
     out = a.gather(-1, t)
     return out.reshape(b, *((1,) * (len(x_shape) - 1)))
 
+# 余弦schedule
 def cosine_beta_schedule(timesteps, s = 0.008):
     """
     cosine schedule
