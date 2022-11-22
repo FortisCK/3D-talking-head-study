@@ -349,6 +349,7 @@ class Unet3D(nn.Module):
         self,
         dim, #64
         cond_dim = None,
+        cond_classes = None,
         out_dim = None,
         dim_mults=(1, 2, 4, 8), #(1, 2, 4, 8)
         channels = 3,
